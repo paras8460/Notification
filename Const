@@ -1,0 +1,32 @@
+  public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    @SuppressLint("StaticFieldLeak")
+    public static void sendNotification(final String regToken) {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    JSONObject json=new JSONObject();
+                    JSONObject dataJson=new JSONObject();
+                    dataJson.put("body","Hi this is sent from device to device");
+                    dataJson.put("title","dummy title");
+                    json.put("notification",dataJson);
+                    json.put("to",regToken);
+                    RequestBody body = RequestBody.create(JSON, json.toString());
+                    Request request = new Request.Builder()
+                            .header("Authorization","key="+"AIzaSyCMbIj3aAwyheMkHYXaXM9RjYjX31_NUeY")
+                            .url("https://fcm.googleapis.com/fcm/send")
+                            .post(body)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String finalResponse = response.body().string();
+                 //   Toast.makeText(context, finalResponse, Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    //Log.d(TAG,e+"");
+                }
+                return null;
+            }
+        }.execute();
+
+    }
